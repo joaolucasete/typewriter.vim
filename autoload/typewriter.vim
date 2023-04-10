@@ -13,7 +13,9 @@ let s:ding     = s:sound_dir .. '/ding1.wav'
 let s:mpv_path = substitute(system('which mpv'), '\n', '', '') 
 
 function! typewriter#Enable() abort
-  call s:CheckRequirements()
+  if !s:CheckRequirements()
+    return
+  endif
 
   let s:typewriter_enabled = v:true
 
@@ -64,9 +66,10 @@ endfunction
 function! s:CheckRequirements() abort
   if !has('sound') && !has('nvim')
     echo "Typewriter.vim requires a Vim compiled with +sound"
-    return
+    return 0
   elseif has('nvim') && s:mpv_path == ''
     echo "Typewriter.vim running in nvim requires mpv installed in your path"
-    return
+    return 0
   endif
+  return 1
 endfunction
